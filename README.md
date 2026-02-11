@@ -212,12 +212,12 @@ cd && cd YukiBot-MD && rm -rf Sessions/Owner && npm start
 ---
 
 ### 🦋 Colaboradores
-<a href="https://api.stellarwa.xyz">
-  <img src="https://contrib.rocks/image?repo=The-King-Destroy/YukiBot-MD" />
+<a href="https://api.nightlight.qzz.io">
+  <img src="https://contrib.rocks/image?repo=iamDestroy/YukiBot-MD" />
 </a>
 
 ### 🌼 Agradecimientos
 [![ZyxlJs](https://github.com/DevZyxlJs.png?size=100)](https://github.com/DevZyxlJs) [![Carlos](https://github.com/AzamiJs.png?size=100)](https://github.com/AzamiJs)
 
 ### 💐 Propietario
-[![King](https://github.com/The-King-Destroy.png?size=120)](https://github.com/The-King-Destroy)
+[![King](https://github.com/iamDestroy.png?size=120)](https://github.com/iamDestroy)
