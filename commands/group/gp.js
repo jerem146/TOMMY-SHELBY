@@ -8,7 +8,7 @@ export default {
     const from = m.chat
     const groupMetadata = m.isGroup ? await client.groupMetadata(from).catch((e) => {}) : ''
     const groupName = groupMetadata.subject;
-    const groupBanner = await client.profilePictureUrl(m.chat, 'image').catch(() => 'https://files.catbox.moe/xr2m6u.jpg')
+    const groupBanner = await client.profilePictureUrl(m.chat, 'image').catch(() => 'https://cdn.yuki-wabot.my.id/files/2PVh.jpeg')
     const groupCreator = groupMetadata.owner ? '@' + groupMetadata.owner.split('@')[0] : 'Desconocido';
     const groupAdmins = groupMetadata?.participants.filter(p => (p.admin === 'admin' || p.admin === 'superadmin')) || []
     const totalParticipants = groupMetadata.participants.length;
