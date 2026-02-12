@@ -27,7 +27,7 @@ export default {
     const tipo2 = esReporte ? 'ꕥ Reporte' : 'ꕥ Sugerencia'
     const user = m.pushName || 'Usuario desconocido'
     const numero = m.sender.split('@')[0]
-    const pp = await client.profilePictureUrl(m.sender, 'image').catch(() => 'https://cdn.yuki-wabot.my.id/files/nufq.jpeg')
+    const pp = await client.profilePictureUrl(m.sender, 'image').catch(() => 'https://cdn.yuki-wabot.my.id/files/2PVh.jpeg')
     let reportMsg = `🫗۫᷒ᰰ⃘ׅ᷒  ۟　\`${tipo}\`　ׅ　ᩡ\n\n𖹭  ׄ  ְ ❖ *Nombre*\n> ${user}\n\n𖹭  ׄ  ְ ❖ *Número*\n> wa.me/${numero}\n\n𖹭  ׄ  ְ ❖ *Fecha*\n> ${fechaLocal}\n\n𖹭  ׄ  ְ ❖ *Mensaje*\n> ${texto}\n\n`
     for (const num of global.owner) {
       try {
