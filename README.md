@@ -34,7 +34,7 @@ Siempre usa la librería principal y oficial de Baileys.
 
 ---
 
-### Instalaciónes Básicas
+### Instalaciónes Básicas ozi
 
 <details>
 <summary><strong>🍒 Cloud</strong> — Shell</summary>
