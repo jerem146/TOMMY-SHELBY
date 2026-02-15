@@ -38,3 +38,9 @@ apifaa: { url: "https://api-faa.my.id", key: null },
 xyro: { url: "https://api.xyro.site", key: null },
 yupra: { url: "https://api.yupra.my.id", key: null }
 }
+
+let file = fileURLToPath(import.meta.url)
+watchFile(file, () => {
+  unwatchFile(file)
+  import(`${file}?update=${Date.now()}`)
+})
