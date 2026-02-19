@@ -17,7 +17,7 @@ gmail: "thekingdestroy507@gmail.com"
 }
 global.my = {
 ch: '120363424894597956@newsletter',
-name: 'ೃ࿔ ყµҡเ ωαɓσƭร - σƒƒเ૮เαℓ ૮ɦαɳɳεℓ .ೃ࿐',
+name: 'ೃ࿔ YUMI.ೃ࿐',
 }
 
 global.mess = {
