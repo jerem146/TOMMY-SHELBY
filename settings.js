@@ -16,7 +16,7 @@ github: "https://github.com/The-King-Destroy/YukiBot-MD",
 gmail: "thekingdestroy507@gmail.com"
 }
 global.my = {
-ch: '120363424894597956@newsletter',
+ch: '120363424209556447@newsletter',
 name: 'ೃ࿔ YUMI.ೃ࿐',
 }
 
