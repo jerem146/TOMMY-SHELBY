@@ -2,12 +2,12 @@ import fs from 'fs';
 import { watchFile, unwatchFile } from 'fs'
 import { fileURLToPath } from 'url'
 
-global.owner = ['573196588149', '5492916450307', '5216671548329', '573247662531', '51921826291', '50493732693']
+global.owner = ['51963896243', '5492916450307', '5216671548329', '573247662531', '51921826291', '50493732693']
 global.botNumber = ''
 
 global.sessionName = 'Sessions/Owner'
 global.version = '^2.0 - Latest'
-global.dev = "© ⍴᥆ᥕᥱrᥱძ ᑲᥡ ⁱᵃᵐ|𝔇ĕ𝐬†𝓻⊙γ𒆜"
+global.dev = "YUMI"
 global.links = {
 api: 'https://api.nightlight.qzz.io',
 web: 'http://localhost:5010',
