@@ -7,7 +7,7 @@ global.botNumber = ''
 
 global.sessionName = 'Sessions/Owner'
 global.version = '^2.0 - Latest'
-global.dev = "YUMI"
+global.dev = "🌸💖YUMI💖🌸"
 global.links = {
 api: 'https://api.nightlight.qzz.io',
 web: 'http://localhost:5010',
