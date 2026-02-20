@@ -30,10 +30,10 @@ antilink(client, m)
 
 
 //━━━━━━━━━━━━━━━━━━━
-// 🛡️ ANTI-MENCIÓN (solo borra el mensaje)
+// 🛡️ ANTI-MENCIÓN
 //━━━━━━━━━━━━━━━━━━━
 try {
-const chat = global.db.data.chats[m.chat] || {}
+const chat = global.db.data.chats[m.chat] ||= {}
 
 if (m.isGroup && chat.antiMention) {
 
@@ -51,7 +51,7 @@ return
 
 
 //━━━━━━━━━━━━━━━━━━━
-// 🔌 SISTEMA DE PLUGINS
+// 🔌 PLUGINS GLOBAL
 //━━━━━━━━━━━━━━━━━━━
 for (const name in global.plugins) {
 const plugin = global.plugins[name]
@@ -62,13 +62,23 @@ await plugin.all.call(client, m, { client })
 console.error(`Error en plugin.all -> ${name}`, err)
 }}}
 
-const from = m.key.remoteJid
-const botJid = client.user.id.split(':')[0] + '@s.whatsapp.net' || client.user.lid
-const chat = global.db.data.chats[m.chat] || {}
-const settings = global.db.data.settings[botJid] || {}  
-const user = global.db.data.users[sender] ||= {}
-const users = chat.users?.[sender] ||= {}
 
+//━━━━━━━━━━━━━━━━━━━
+// 🗄️ BASE DE DATOS SEGURA
+//━━━━━━━━━━━━━━━━━━━
+const botJid = client.user.id.split(':')[0] + '@s.whatsapp.net' || client.user.lid
+
+const chat = global.db.data.chats[m.chat] ||= {}
+const settings = global.db.data.settings[botJid] ||= {}
+const user = global.db.data.users[sender] ||= {}
+
+chat.users ||= {}
+const users = chat.users[sender] ||= {}
+
+
+//━━━━━━━━━━━━━━━━━━━
+// 🤖 NOMBRE DEL BOT
+//━━━━━━━━━━━━━━━━━━━
 const rawBotname = settings.namebot || 'Yuki'
 const tipo = settings.type || 'Sub'
 const isValidBotname = /^[\w\s]+$/.test(rawBotname)
@@ -111,6 +121,10 @@ return [regex.exec(m.text), regex]
 
 let match = matchs.find(p=>p[0])
 
+
+//━━━━━━━━━━━━━━━━━━━
+// 🔧 BEFORE PLUGINS
+//━━━━━━━━━━━━━━━━━━━
 for (const name in global.plugins) {
 const plugin = global.plugins[name]
 if (!plugin) continue
@@ -129,6 +143,10 @@ let args = m.text.slice(usedPrefix.length).trim().split(" ")
 let command = (args.shift()||'').toLowerCase()
 let text = args.join(' ')
 
+
+//━━━━━━━━━━━━━━━━━━━
+// 👮 ADMINS
+//━━━━━━━━━━━━━━━━━━━
 let groupAdmins = []
 if (m.isGroup) {
 let groupMetadata = await client.groupMetadata(m.chat).catch(()=>null)
@@ -138,6 +156,10 @@ groupAdmins = groupMetadata?.participants.filter(p=>p.admin) || []
 const isBotAdmins = m.isGroup ? groupAdmins.some(p=>p.id===botJid) : false
 const isAdmins = m.isGroup ? groupAdmins.some(p=>p.id===sender) : false
 
+
+//━━━━━━━━━━━━━━━━━━━
+// 🚫 FILTROS
+//━━━━━━━━━━━━━━━━━━━
 if ((m.id.startsWith("3EB0") ||
 (m.id.startsWith("BAE5") && m.id.length===16) ||
 (m.id.startsWith("B24E") && m.id.length===20))) return  
@@ -168,6 +190,10 @@ return m.reply(`✘ Comando no permitido.`)
 if (cmdData.isAdmin && !isAdmins) return client.reply(m.chat, mess.admin, m)
 if (cmdData.botAdmin && !isBotAdmins) return client.reply(m.chat, mess.botAdmin, m)
 
+
+//━━━━━━━━━━━━━━━━━━━
+// 🚀 EJECUCIÓN
+//━━━━━━━━━━━━━━━━━━━
 try {
 await client.readMessages([m.key])
 user.usedcommands = (user.usedcommands || 0) + 1
