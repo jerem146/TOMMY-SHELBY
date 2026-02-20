@@ -1,4 +1,6 @@
+import fetch from 'node-fetch';
 import { getDevice } from '@whiskeysockets/baileys';
+import fs from 'fs';
 import axios from 'axios';
 import moment from 'moment-timezone';
 import { bodyMenu, menuObject } from '../../lib/commands.js';
@@ -13,48 +15,57 @@ export default {
   category: 'info',
   run: async (client, m, args, usedPrefix, command) => {
     try {
-
       const now = new Date();
-      const tiempo = moment.tz('America/Caracas').format('DD MMM YYYY');
+      const colombianTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Caracas' }));
+      const tiempo = colombianTime.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/,/g, '');
       const tempo = moment.tz('America/Caracas').format('hh:mm A');
 
       const botId = client?.user?.id.split(':')[0] + '@s.whatsapp.net';
-      const botSettings = global.db.data.settings?.[botId] || {};
+      const botSettings = global.db.data.settings[botId] || {};
 
-      const botname = botSettings.botname || 'BOT';
+      const botname = botSettings.botname || '';
       const namebot = botSettings.namebot || '';
-      const banner = botSettings.banner || '';
+
+      /* ===== BANNER FIJO ===== */
+      const banner = "https://i.postimg.cc/qBGN8dDv/file-000000003d5871f59a50c6c72f709fe0.png";
+
       const owner = botSettings.owner || '';
       const canalId = botSettings.id || '';
       const canalName = botSettings.nameid || '';
+      const prefix = botSettings.prefix;
+
+      /* ===== FIX LINK (evita crash) ===== */
       const link = botSettings.link || '';
 
-      const isOficialBot = botId === client.user.id.split(':')[0] + '@s.whatsapp.net';
+      const isOficialBot = botId === global.client.user.id.split(':')[0] + '@s.whatsapp.net';
       const botType = isOficialBot ? 'Principal/Owner' : 'Sub Bot';
 
-      const users = Object.keys(global.db.data.users || {}).length;
+      const users = Object.keys(global.db.data.users).length;
       const device = getDevice(m.key.id);
-      const sender = global.db.data.users?.[m.sender]?.name || m.pushName || 'Usuario';
+
+      /* ===== FIX SENDER (evita crash) ===== */
+      const sender = global.db.data.users[m.sender]?.name || m.pushName || 'Usuario';
+
       const time = client.uptime ? formatearMs(Date.now() - client.uptime) : "Desconocido";
 
       const alias = {
-        anime: ['anime','reacciones'],
-        downloads: ['downloads','descargas'],
-        economia: ['economia','economy','eco'],
-        gacha: ['gacha','rpg'],
-        grupo: ['grupo','group'],
-        nsfw: ['nsfw','+18'],
-        profile: ['profile','perfil'],
-        sockets: ['sockets','bots'],
-        utils: ['utils','utilidades','herramientas']
+        anime: ['anime', 'reacciones'],
+        downloads: ['downloads', 'descargas'],
+        economia: ['economia', 'economy', 'eco'],
+        gacha: ['gacha', 'rpg'],
+        grupo: ['grupo', 'group'],
+        nsfw: ['nsfw', '+18'],
+        profile: ['profile', 'perfil'],
+        sockets: ['sockets', 'bots'],
+        utils: ['utils', 'utilidades', 'herramientas']
       };
 
       const input = normalize(args[0] || '');
       const cat = Object.keys(alias).find(k => alias[k].map(normalize).includes(input));
-      const category = `${cat ? ` para \`${cat}\`` : ''}`;
+      const category = `${cat ? ` para \`${cat}\`` : '. *(˶ᵔ ᵕ ᵔ˶)*'}`;
 
-      if (args[0] && !cat) {
-        return m.reply(`✧ La categoría *${args[0]}* no existe.\nDisponibles: *${Object.keys(alias).join(', ')}*`);
+      if (args[0] && !cat) {      
+        return m.reply(`《✧》 La categoria *${args[0]}* no existe, las categorias disponibles son: *${Object.keys(alias).join(', ')}*.`);
       }
 
       const sections = menuObject;
@@ -62,12 +73,12 @@ export default {
         ? String(sections[cat] || '')
         : Object.values(sections).map(s => String(s || '')).join('\n\n');
 
-      let menu = bodyMenu
-        ? String(bodyMenu || '') + '\n\n' + content
-        : content;
+      let menu = bodyMenu ? String(bodyMenu || '') + '\n\n' + content : content;
 
       const replacements = {
-        $owner: owner || 'Privado',
+        $owner: owner ? (!isNaN(owner.replace(/@s\.whatsapp\.net$/, '')) 
+          ? global.db.data.users[owner]?.name || owner.split('@')[0] 
+          : owner) : 'Oculto por privacidad',
         $botType: botType,
         $device: device,
         $tiempo: tiempo,
@@ -86,34 +97,30 @@ export default {
         menu = menu.replace(new RegExp(`\\${key}`, 'g'), value);
       }
 
-      /* ===== DESCARGAR BANNER COMO BUFFER ===== */
-      let thumb = null;
-      try {
-        if (banner) {
-          const res = await axios.get(banner, { responseType: 'arraybuffer' });
-          thumb = res.data;
-        }
-      } catch {}
-
-      /* ===== ENVIAR MENÚ ===== */
-
       await client.sendMessage(m.chat, {
         text: menu,
         contextInfo: {
           mentionedJid: [m.sender],
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: canalId,
+            serverMessageId: '',
+            newsletterName: canalName
+          },
           externalAdReply: {
             title: botname,
-            body: `${namebot}`,
-            thumbnail: thumb,
+            body: `${namebot}, mᥲძᥱ ᥕі𝗍һ ᑲᥡ ⁱᵃᵐ|𝔇ĕ𝐬†𝓻⊙γ𒆜`,
+            showAdAttribution: false,
+            thumbnailUrl: banner,
             mediaType: 1,
+            previewType: 0,
             renderLargerThumbnail: true
           }
         }
       }, { quoted: m });
 
     } catch (e) {
-      console.log(e);
-      await m.reply(`Error en menú:\n${e.message}`);
+      await m.reply(`Error ejecutando *${usedPrefix + command}*\n${e.message}`);
     }
   }
 };
