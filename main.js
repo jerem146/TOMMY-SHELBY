@@ -20,6 +20,25 @@ let body = m.message.conversation || m.message.extendedTextMessage?.text || m.me
 initDB(m, client)
 antilink(client, m)
 
+
+// 🔹 ANTI-MENCIÓN (BORRA MENSAJES CON TAG)
+try {
+const chat = global.db.data.chats[m.chat] || {}
+if (m.isGroup && chat.antiMention && m.mentionedJid?.length) {
+
+await client.sendMessage(m.chat, { delete: m.key }).catch(()=>{})
+
+await client.sendMessage(m.chat, {
+text: `《✧》 @${m.sender.split('@')[0]} no se permiten menciones en este grupo.`,
+mentions: [m.sender]
+}).catch(()=>{})
+
+return
+}
+} catch {}
+
+
+// 🔹 SISTEMA DE PLUGINS
 for (const name in global.plugins) {
 const plugin = global.plugins[name]
 if (plugin && typeof plugin.all === "function") {
