@@ -1,5 +1,5 @@
 export default {
-  command: ['antimention'],
+  command: ['antistatus'],
   category: 'grupo',
   isAdmin: true,
 
@@ -9,15 +9,15 @@ export default {
     const chat = global.db.data.chats[m.chat] ||= {}
 
     if (!args[0]) {
-      return m.reply('Uso:\n.antimention on\n.antimention off')
+      return m.reply('Uso:\n.antistatus on\n.antistatus off')
     }
 
     if (args[0] === 'on') {
-      chat.antiMention = true
-      m.reply('✅ Anti-mención activado')
+      chat.antiStatusMention = true
+      m.reply('✅ Anti mención en estados activado')
     } else if (args[0] === 'off') {
-      chat.antiMention = false
-      m.reply('❌ Anti-mención desactivado')
+      chat.antiStatusMention = false
+      m.reply('❌ Anti mención en estados desactivado')
     }
   }
 }
