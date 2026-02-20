@@ -32,9 +32,7 @@ export default {
       const owner = botSettings.owner || '';
       const canalId = botSettings.id || '';
       const canalName = botSettings.nameid || '';
-      const prefix = botSettings.prefix;
-
-      /* ===== FIX LINK (evita crash) ===== */
+      const prefix = botSettings.prefix || usedPrefix;
       const link = botSettings.link || '';
 
       const isOficialBot = botId === global.client.user.id.split(':')[0] + '@s.whatsapp.net';
@@ -42,10 +40,7 @@ export default {
 
       const users = Object.keys(global.db.data.users).length;
       const device = getDevice(m.key.id);
-
-      /* ===== FIX SENDER (evita crash) ===== */
       const sender = global.db.data.users[m.sender]?.name || m.pushName || 'Usuario';
-
       const time = client.uptime ? formatearMs(Date.now() - client.uptime) : "Desconocido";
 
       const alias = {
@@ -64,8 +59,8 @@ export default {
       const cat = Object.keys(alias).find(k => alias[k].map(normalize).includes(input));
       const category = `${cat ? ` para \`${cat}\`` : '. *(˶ᵔ ᵕ ᵔ˶)*'}`;
 
-      if (args[0] && !cat) {      
-        return m.reply(`《✧》 La categoria *${args[0]}* no existe, las categorias disponibles son: *${Object.keys(alias).join(', ')}*.`);
+      if (args[0] && !cat) {
+        return m.reply(`《✧》 La categoria *${args[0]}* no existe.`);
       }
 
       const sections = menuObject;
@@ -76,8 +71,8 @@ export default {
       let menu = bodyMenu ? String(bodyMenu || '') + '\n\n' + content : content;
 
       const replacements = {
-        $owner: owner ? (!isNaN(owner.replace(/@s\.whatsapp\.net$/, '')) 
-          ? global.db.data.users[owner]?.name || owner.split('@')[0] 
+        $owner: owner ? (!isNaN(owner.replace(/@s\.whatsapp\.net$/, ''))
+          ? global.db.data.users[owner]?.name || owner.split('@')[0]
           : owner) : 'Oculto por privacidad',
         $botType: botType,
         $device: device,
@@ -89,7 +84,7 @@ export default {
         $sender: sender,
         $botname: botname,
         $namebot: namebot,
-        $prefix: usedPrefix,
+        $prefix: prefix,
         $uptime: time
       };
 
@@ -97,8 +92,10 @@ export default {
         menu = menu.replace(new RegExp(`\\${key}`, 'g'), value);
       }
 
+      /* ===== ENVÍO CON IMAGEN REAL ===== */
       await client.sendMessage(m.chat, {
-        text: menu,
+        image: { url: banner },
+        caption: menu,
         contextInfo: {
           mentionedJid: [m.sender],
           isForwarded: true,
@@ -106,15 +103,6 @@ export default {
             newsletterJid: canalId,
             serverMessageId: '',
             newsletterName: canalName
-          },
-          externalAdReply: {
-            title: botname,
-            body: `${namebot}, mᥲძᥱ ᥕі𝗍һ ᑲᥡ ⁱᵃᵐ|𝔇ĕ𝐬†𝓻⊙γ𒆜`,
-            showAdAttribution: false,
-            thumbnailUrl: banner,
-            mediaType: 1,
-            previewType: 0,
-            renderLargerThumbnail: true
           }
         }
       }, { quoted: m });
